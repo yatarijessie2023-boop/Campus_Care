@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router';
 const HomeView = () => import('../views/HomeView.vue');
 const ReportFormView = () => import('../views/ReportFormView.vue');
 const ReportsView = () => import('../views/ReportsView.vue');
@@ -8,7 +8,7 @@ const ReportDetailView = () => import('../views/ReportDetailView.vue');
 const AdminReportEditView = () => import('../views/AdminReportEditView.vue');
 const AdminDataView = () => import('../views/AdminDataView.vue');
 const AdminAccountsView = () => import('../views/AdminAccountsView.vue');
-const router = createRouter({ history: createWebHistory(), routes: [
+const router = createRouter({ history: createWebHashHistory(), routes: [
   { path: '/', component: HomeView }, { path: '/report', component: ReportFormView },
   { path: '/reports', component: ReportsView }, { path: '/admin/login', component: LoginView },
   { path: '/admin/dashboard', component: DashboardView, meta: { requiresAuth: true } },
