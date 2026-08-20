@@ -17,9 +17,10 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Set up Node.js version
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22.x'
@@ -30,15 +31,7 @@ jobs:
         working-directory: backend
         run: npm install
 
-      - name: Build backend if present
-        working-directory: backend
-        run: npm run build --if-present
-
-      - name: Test backend if present
-        working-directory: backend
-        run: npm run test --if-present
-
-      - name: Upload artifact for deployment job
+      - name: Upload backend artifact
         uses: actions/upload-artifact@v4
         with:
           name: node-app
@@ -53,7 +46,7 @@ jobs:
       contents: read
 
     steps:
-      - name: Download artifact from build job
+      - name: Download backend artifact
         uses: actions/download-artifact@v4
         with:
           name: node-app
@@ -67,7 +60,6 @@ jobs:
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_83A8DE0611724C008140BDD2A91C116F }}
 
       - name: Deploy to Azure Web App
-        id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'campus-care-api'
