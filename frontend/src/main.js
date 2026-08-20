@@ -1,0 +1,11 @@
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
+import App from './App.vue';
+import router from './router';
+import './assets/main.css';
+import 'leaflet/dist/leaflet.css';
+import { t, toggleLocale } from './i18n';
+const app = createApp(App);
+app.config.globalProperties.$t = t;
+app.config.globalProperties.$toggleLocale = toggleLocale;
+app.use(createPinia()).use(router).mount('#app');

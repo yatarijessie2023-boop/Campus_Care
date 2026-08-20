@@ -1,0 +1,10 @@
+<script setup>
+import { onMounted, ref } from 'vue'; import { useRoute } from 'vue-router'; import api from '../services/api'; import ReportMap from '../components/ReportMap.vue'; import { resolveUploadUrl } from '../utils/url';
+import StatusBadge from '../components/StatusBadge.vue';
+import { formatReportNo } from '../utils/reportNumber';
+import { locale, localizeData, localizeMessage, t } from '../i18n';
+const route = useRoute(); const report = ref(null); const error = ref('');
+onMounted(async () => { try { report.value = (await api.get(`/reports/${route.params.id}`)).data.data; } catch (e) { error.value = localizeMessage(e.response?.data?.message || t('detail.loadFailed')); } });
+function date(v) { return v ? new Date(v).toLocaleString(locale.value === 'en' ? 'en-US' : 'zh-TW', { dateStyle:'medium', timeStyle:'short' }) : ''; }
+</script>
+<template><section v-if="report"><div class="page-heading"><div><p class="eyebrow">{{ t('detail.eyebrow') }}</p><h1>{{ formatReportNo(report.report_no) }}</h1></div><StatusBadge :status="report.status" /></div><div class="detail-layout"><article class="card"><h2>{{ localizeData(report.category_name) }} · {{ localizeData(report.building_name) }}</h2><p class="muted">{{ report.floor || t('detail.missingFloor') }} · {{ localizeData(report.location_detail) }}</p><p class="detail-description">{{ report.description }}</p><ReportMap v-if="report.latitude && report.longitude" :latitude="report.latitude" :longitude="report.longitude" /></article><aside class="card"><h2>{{ t('detail.progress') }}</h2><div class="timeline"><div v-for="item in report.history" :key="item.id" class="timeline-item"><div class="timeline-dot" :class="`dot-${item.status}`"></div><div><StatusBadge :status="item.status" /><time>{{ date(item.created_at) }}</time><p v-if="item.note">{{ localizeData(item.note) }}</p><small v-if="item.changed_by_name">{{ localizeData(item.changed_by_name) }}</small></div></div></div></aside></div><router-link class="btn btn-light" to="/reports">{{ t('detail.backBoard') }}</router-link></section><p v-else-if="error" class="error">{{ error }}</p><p v-else>{{ t('detail.loading') }}</p></template>
